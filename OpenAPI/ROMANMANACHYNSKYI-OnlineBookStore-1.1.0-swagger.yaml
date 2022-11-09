@@ -1,0 +1,376 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ROMANMANACHYNSKYI/OnlineBookStore/1.1.0
+info:
+  description: This is a API for internet book store
+  version: "1.1.0"
+  title: Online Book Store
+#  contact:
+#    email: you@your-company.com
+#  license:
+#    name: Apache 2.0
+#    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+#tags:
+#  - name: admins
+#    description: Secured Admin-only calls
+#  - name: developers
+#    description: Operations available to regular developers
+paths:
+  /Categoty:  
+    get:
+      summary: Get all categories
+      tags: 
+        - Category
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/categoryBoilerplate'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError' 
+    post:
+      summary: Create an category
+      tags:
+        - Category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/categoryBoilerplate'
+      responses:
+        "201":
+          description: Category created      
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /Category/{categoryId}:
+    put:
+      summary: Update information about category by it's id
+      tags: 
+        - Category
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        schema:
+          type: number
+          format: longInt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/categoryBoilerplate'
+      responses:
+        "200":
+          description: Category info updated 
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Delete category
+      description: Delete exact category
+      tags: 
+        - Category
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        schema:
+          type: number
+          format: longInt
+      responses:
+        "200":
+          description: Category deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /Product:  
+    get:
+      summary: Get all products
+      tags: 
+        - Product
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/productBoilerplate'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError' 
+    post:
+      summary: Create an product
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/productBoilerplate'
+      responses:
+        "201":
+          description: Product created
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /Product/{productId}:
+    put:
+      summary: Update information about product by it's id
+      tags: 
+        - Product
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: number
+          format: longInt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/productBoilerplate'
+      responses:
+        "200":
+          description: Product info updated
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError' 
+            
+    delete:
+      summary: Delete product
+      description: Delete exact product
+      tags: 
+        - Product
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: number
+          format: longInt
+      responses:
+        "200":
+          description: Product deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    productBoilerplate:
+      type: object
+      properties:
+        productName:
+          type: string
+          maxLength: 100
+          minLength: 1
+          example: "Four treasures of heaven"
+        price:
+          type: object
+          properties:
+            priceNumber:
+              type: number
+              format: double
+              example: 279
+            priceCurrency:
+              type: string
+              enum:
+                - UAN
+                - USD
+                - EUR
+              default: UAN
+            photo:
+              type: string
+              example: "C:/Programming/Projects/Book-Store/Photo/photo.pdf"
+        category:
+          $ref: '#/components/schemas/categoryBoilerplate'
+        productInformation:
+          $ref: '#/components/schemas/productInformation'
+         
+    categoryBoilerplate:
+      type: object
+      properties:
+        categuryName:
+          type: string
+          maxLength: 50
+          minLength: 1
+          example: "Bakery"
+        goodsQuantity:
+          type: number
+          format: int
+          example: 70
+          
+    productInformation:
+      type: object
+      properties:
+        author:
+          type: object
+          properties:
+            authorName:
+              type: string
+              maxLength: 100
+              minLength: 1
+              example: "Jenny Tingwei Zhang"
+            birthDate:
+              type: string
+              format: date
+            photo:
+              type: string
+              example: "C:/Programming/Projects/Book-Store/Photo/photo.pdf"
+        publisher:
+          type: string
+          maxLength: 100
+          minLength: 1
+          example: "Laboratory"
+        yearOfPublication:
+          type: number
+          format: int
+          example: 2022
+        language:
+          type: string
+          maxLength: 100
+          minLength: 1
+          example: "Ukrainian"
+        cover:
+          type: string
+          enum: 
+            - Paperback with flaps
+            - Hard cover
+        format: 
+          type: object
+          properties:
+            width:
+              type: number
+              format: int
+              example: 145
+            length:
+              type: number
+              format: int
+              example: 215
+        type:
+          type: string
+          enum:
+            - Paper book
+            - Online book
+  
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: number
+                example: 400
+    Unauthorized:
+      description: User is not autorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: number
+                example: 401
+    Forbidden:
+      description: User is not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: number
+                example: 403
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: number
+                example: 404
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: number
+                example: 500
