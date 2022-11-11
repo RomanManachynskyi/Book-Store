@@ -16,7 +16,8 @@ namespace Book_Store.Dtos.Product
         public string yearOfPublication { get; set; }
         public Language Language { get; set; }
         public Cover Cover { get; set; }
-        public BookFormat Format { get; set; }
+        public int BookWidth { get; set; }
+        public int BookLength { get; set; } 
         public BookType BookType { get; set; }
         public string photoLocation { get; set; }
         public int ProductQuantity { get; set; }

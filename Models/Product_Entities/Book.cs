@@ -11,15 +11,16 @@ namespace Book_Store.Models.Product_Entities
         public int Id { get; set; }
         public string BookName { get; set; }
         public double  BookPrice { get; set; }
-        public ProductCategory Category { get; set; }
-        public Author Author { get; set; }
+        public int CategoryId { get; set; }
+        public int AuthorId { get; set; }
         public string Publisher { get; set; }
-        public string yearOfPublication { get; set; }
+        public string YearOfPublication { get; set; }
         public Language Language { get; set; }
         public Cover Cover { get; set; }
-        public BookFormat Format { get; set; }
+        public int BookWidth { get; set; }
+        public int BookLength { get; set; }    
         public BookType BookType { get; set; }
-        public string photoLocation { get; set; }
+        public string PhotoLocation { get; set; }
         public int ProductQuantity { get; set; }
     }
 }
