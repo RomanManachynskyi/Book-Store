@@ -7,7 +7,6 @@ namespace Book_Store.Dtos.Order
 {
     public class CreateOrderDtos
     {
-        public int AccountId { get; set; }
         public Models.Product_Entities.Book Book { get; set; }
         public int TransactionNumber { get; set; }
         public string TransactionDate { get; set; }

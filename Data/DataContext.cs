@@ -16,5 +16,6 @@ namespace Book_Store.Data
         public DbSet<Models.Product_Entities.Book> Book { get; set; }
         public DbSet<Models.Product_Entities.Author> Author { get; set; }
         public DbSet<Models.Product_Entities.ProductCategory> Categories { get; set; }
+        public DbSet<Models.User.User> User { get; set; }
     }
 }

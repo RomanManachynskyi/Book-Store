@@ -28,6 +28,37 @@ namespace BookStore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GoodsQuantity = table.Column<int>(type: "int", nullable: false),
+                    PhotoLocation = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Mail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    PaswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Book",
                 columns: table => new
                 {
@@ -35,6 +66,7 @@ namespace BookStore.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BookName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BookPrice = table.Column<double>(type: "float", nullable: false),
+                    PriceCurrensy = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
                     Publisher = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -50,34 +82,42 @@ namespace BookStore.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Book", x => x.Id);
-                    //table.ForeignKey("FK_Author", x => x.AuthorId, principalTable: "Author", principalColumn: "Id");
-                    //table.ForeignKey("FK_Categories", x => x.CategoryId, principalTable: "Categories", principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Book_Author_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Author",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Book_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GoodsQuantity = table.Column<int>(type: "int", nullable: false),
-                    PhotoLocation = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Book_AuthorId",
+                table: "Book",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Book_CategoryId",
+                table: "Book",
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Author");
+                name: "Book");
 
             migrationBuilder.DropTable(
-                name: "Book");
+                name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Author");
 
             migrationBuilder.DropTable(
                 name: "Categories");

@@ -8,6 +8,6 @@ namespace Book_Store.Models.Bucket
     public class Bucket
     {
         public int Id { get; set; }
-        public int AccountId { get; set; }
+        public Models.User.User User { get; set; }
     }
 }
