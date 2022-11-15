@@ -8,6 +8,7 @@ using Swashbuckle.AspNetCore.Filters;
 using Book_Store.Services.AuthService;
 using Book_Store.Services.AuthorService;
 using Book_Store.Services.CategoryService;
+using Book_Store.Services.OrderService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

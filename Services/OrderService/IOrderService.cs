@@ -9,9 +9,11 @@ namespace Book_Store.Services.OrderService
 {
     public interface IOrderService
     {
-        public Task<ServiceResponse<List<GetOrdetDto>>> GetAllOrders();
-        public Task<ServiceResponse<List<GetOrdetDto>>> GetOrderHistory();
-        public Task<ServiceResponse<List<GetOrdetDto>>> CreateOrder(CreateOrderDtos createdOrder);
-        public Task<ServiceResponse<List<GetOrdetDto>>> DeleteOrder(int id);
+        public Task<ServiceResponse<List<GetOrderDto>>> GetOrders();
+        public Task<ServiceResponse<List<GetOrderDto>>> GetOrderHistory();
+        public Task<ServiceResponse<List<GetOrderDto>>> CreateOrder(CreateOrderDto newOrder);
+        public Task<ServiceResponse<List<GetOrderDto>>> MoveOrderToorderHistory(int id);
+        public Task<ServiceResponse<List<GetOrderDto>>> DeleteOrder(int id);
+        public Task<ServiceResponse<List<GetOrderDto>>> DeleteOrderInHistory(int id);
     }
 }

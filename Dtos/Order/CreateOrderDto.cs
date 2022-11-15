@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Book_Store.Dtos.Order
 {
-    public class GetOrdetDto
+    public class CreateOrderDto
     {
-        public int Id { get; set; }
-        public Models.Product_Entities.Book Book { get; set; }
+        public int UserId  { get; set; }        
+        public int BookId  { get; set; }        
         public int TransactionNumber { get; set; }
         public string TransactionDate { get; set; }
     }

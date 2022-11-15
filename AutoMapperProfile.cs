@@ -7,6 +7,8 @@ using Book_Store.Models.Product_Entities;
 using Book_Store.Dtos.Product_Entities.Product;
 using Book_Store.Dtos.Product_Entities.Author;
 using Book_Store.Dtos.Product_Entities.Category;
+using Book_Store.Dtos.Order;
+using Book_Store.Models.Orders;
 
 namespace Book_Store
 {
@@ -26,6 +28,12 @@ namespace Book_Store
             CreateMap<ProductCategory, GetCategoryDto>();
             CreateMap<AddCategoryDto, ProductCategory>();
             CreateMap<UpdateCategoryDto, ProductCategory>();                      
+
+            CreateMap<Orders, GetOrderDto>();
+            CreateMap<CreateOrderDto, Orders>();
+            CreateMap<Orders, CreateOrderDto>();
+            CreateMap<CreateOrderDto, OrderHistory>();
+            CreateMap<OrderHistory, GetOrderDto>();
         }
     }
 }

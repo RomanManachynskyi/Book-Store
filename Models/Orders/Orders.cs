@@ -9,6 +9,8 @@ namespace Book_Store.Models.Orders
     public class Orders
     {
         public int Id { get; set; }
+
+        public int UserId { get; set; }
         public Models.User.User User { get; set; }
 
         public int BookId { get; set; }
