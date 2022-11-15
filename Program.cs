@@ -9,6 +9,7 @@ using Book_Store.Services.AuthService;
 using Book_Store.Services.AuthorService;
 using Book_Store.Services.CategoryService;
 using Book_Store.Services.OrderService;
+using Book_Store.Services.BucketService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IBucketService, BucketService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

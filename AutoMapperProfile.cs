@@ -9,6 +9,8 @@ using Book_Store.Dtos.Product_Entities.Author;
 using Book_Store.Dtos.Product_Entities.Category;
 using Book_Store.Dtos.Order;
 using Book_Store.Models.Orders;
+using Book_Store.Models.Bucket;
+using Book_Store.Dtos.Bucket;
 
 namespace Book_Store
 {
@@ -34,6 +36,9 @@ namespace Book_Store
             CreateMap<Orders, CreateOrderDto>();
             CreateMap<CreateOrderDto, OrderHistory>();
             CreateMap<OrderHistory, GetOrderDto>();
+
+            CreateMap<Bucket, GetBucketItemsDto>();
+            CreateMap<AddBucketItemDto, Bucket>();
         }
     }
 }

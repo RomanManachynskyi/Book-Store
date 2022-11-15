@@ -9,7 +9,8 @@ namespace Book_Store.Services.BucketService
 {
     public interface IBucketService
     {
-        public Task<ServiceResponse<List<GetBucketDtos>>> GetBucketItems();
-        public Task<ServiceResponse<List<GetBucketDtos>>> DeleteCategory(int id);
+        public Task<ServiceResponse<List<GetBucketItemsDto>>> GetBucketItems();
+        public Task<ServiceResponse<List<GetBucketItemsDto>>> AddBucketItem(AddBucketItemDto newBucketItem);
+        public Task<ServiceResponse<List<GetBucketItemsDto>>> DeleteBucketItem(int id);
     }
 }
