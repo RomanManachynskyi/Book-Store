@@ -21,6 +21,95 @@ namespace BookStore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Book_Store.Models.Bucket.Bucket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Bucket");
+                });
+
+            modelBuilder.Entity("Book_Store.Models.Orders.OrderHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("OrderReceived")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TransactionDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TransactionNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OrderHistory");
+                });
+
+            modelBuilder.Entity("Book_Store.Models.Orders.Orders", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("OrderReceived")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TransactionDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TransactionNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("Book_Store.Models.Product_Entities.Author", b =>
                 {
                     b.Property<int>("Id")
@@ -97,9 +186,6 @@ namespace BookStore.Migrations
                     b.Property<int>("PriceCurrensy")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductQuantity")
-                        .HasColumnType("int");
-
                     b.Property<string>("Publisher")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -170,6 +256,63 @@ namespace BookStore.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("Book_Store.Models.Bucket.Bucket", b =>
+                {
+                    b.HasOne("Book_Store.Models.Product_Entities.Book", "Book")
+                        .WithMany("Bucket")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Book_Store.Models.User.User", "User")
+                        .WithMany("Bucket")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Book_Store.Models.Orders.OrderHistory", b =>
+                {
+                    b.HasOne("Book_Store.Models.Product_Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Book_Store.Models.User.User", "User")
+                        .WithMany("OrderHistory")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Book_Store.Models.Orders.Orders", b =>
+                {
+                    b.HasOne("Book_Store.Models.Product_Entities.Book", "Book")
+                        .WithMany("Orders")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Book_Store.Models.User.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Book_Store.Models.Product_Entities.Book", b =>
                 {
                     b.HasOne("Book_Store.Models.Product_Entities.Author", "Author")
@@ -194,9 +337,23 @@ namespace BookStore.Migrations
                     b.Navigation("Books");
                 });
 
+            modelBuilder.Entity("Book_Store.Models.Product_Entities.Book", b =>
+                {
+                    b.Navigation("Bucket");
+
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("Book_Store.Models.Product_Entities.ProductCategory", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("Book_Store.Models.User.User", b =>
+                {
+                    b.Navigation("Bucket");
+
+                    b.Navigation("OrderHistory");
                 });
 #pragma warning restore 612, 618
         }

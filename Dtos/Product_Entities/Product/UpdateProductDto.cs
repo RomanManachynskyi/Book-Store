@@ -23,6 +23,5 @@ namespace Book_Store.Dtos.Product_Entities.Product
         public int BookLength { get; set; }    
         public BookType BookType { get; set; }
         public string PhotoLocation { get; set; }
-        public int ProductQuantity { get; set; }
     }
 }

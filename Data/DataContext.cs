@@ -17,5 +17,8 @@ namespace Book_Store.Data
         public DbSet<Models.Product_Entities.Author> Author { get; set; }
         public DbSet<Models.Product_Entities.ProductCategory> Categories { get; set; }
         public DbSet<Models.User.User> User { get; set; }
-    }
+        public DbSet<Models.Orders.Orders> Orders { get; set; }
+        public DbSet<Models.Orders.OrderHistory> OrderHistory { get; set; }        
+        public DbSet<Models.Bucket.Bucket> Bucket { get; set; }
+   }
 }

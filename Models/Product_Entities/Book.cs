@@ -27,6 +27,8 @@ namespace Book_Store.Models.Product_Entities
         public int BookLength { get; set; }    
         public BookType BookType { get; set; }
         public string PhotoLocation { get; set; } = string.Empty;
-        public int ProductQuantity { get; set; }
+
+        public List<Orders.Orders>? Orders { get; set; }
+        public List<Bucket.Bucket>? Bucket { get; set; }
     }
 }
