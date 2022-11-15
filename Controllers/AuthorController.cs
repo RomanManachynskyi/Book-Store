@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Book_Store.Controllers
 {
-    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     public class AuthorController : Controller

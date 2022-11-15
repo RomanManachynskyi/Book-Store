@@ -6,10 +6,11 @@ using Book_Store.Dtos.Bucket;
 using Book_Store.Models;
 using Book_Store.Services.BucketService;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Book_Store.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class BucketController : Controller

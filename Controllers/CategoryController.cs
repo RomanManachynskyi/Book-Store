@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Book_Store.Controllers
 {
-    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     public class CategoryController : Controller

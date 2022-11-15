@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Book_Store.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class OrdersController : Controller
