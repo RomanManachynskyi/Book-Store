@@ -7,6 +7,7 @@ using Book_Store.Dtos.Product_Entities.Product;
 
 namespace Book_Store.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class ProductController : ControllerBase
@@ -17,6 +18,7 @@ namespace Book_Store.Controllers
             this.productService = productService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<GetProductsDto>>>> GetAllProducts()
         {

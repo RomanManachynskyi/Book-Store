@@ -37,14 +37,14 @@ namespace Book_Store.Services.ProductsService
 
             try
             {
-                ProductCategory category = await context.Categories.FirstOrDefaultAsync(c => c.Id == newProduct.CategoryId);
+                ProductCategory category = await context.Categories.FirstAsync(c => c.Id == newProduct.CategoryId);
                 if(category == null)
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Category not found";
                     return serviceResponse;
                 }
-                Author author = await context.Author.FirstOrDefaultAsync(c => c.Id == newProduct.AuthorId);
+                Author author = await context.Author.FirstAsync(c => c.Id == newProduct.AuthorId);
                 if(author == null)
                 {
                     serviceResponse.Success = false;
@@ -72,14 +72,14 @@ namespace Book_Store.Services.ProductsService
 
             try
             {
-                ProductCategory category = await context.Categories.FirstOrDefaultAsync(c => c.Id == updatedProduct.CategoryId);
+                ProductCategory category = await context.Categories.FirstAsync(c => c.Id == updatedProduct.CategoryId);
                 if(category == null)
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Category not found";
                     return serviceResponse;
                 }
-                Author author = await context.Author.FirstOrDefaultAsync(c => c.Id == updatedProduct.AuthorId);
+                Author author = await context.Author.FirstAsync(c => c.Id == updatedProduct.AuthorId);
                 if(author == null)
                 {
                     serviceResponse.Success = false;

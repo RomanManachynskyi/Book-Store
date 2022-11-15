@@ -29,12 +29,6 @@ namespace Book_Store.Controllers
             return Ok(await orderService.GetOrders());
         }
 
-        [HttpGet("History")]
-        public async Task<ActionResult<ServiceResponse<List<GetOrderDto>>>> GetOrderHistory()
-        {
-            return Ok(await orderService.GetOrderHistory());
-        }
-
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<GetOrderDto>>>> CreateOrder(CreateOrderDto newOrder)
         {
@@ -42,9 +36,9 @@ namespace Book_Store.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ServiceResponse<List<GetOrderDto>>>> MoveOrderToorderHistory(int id)
+        public async Task<ActionResult<ServiceResponse<List<GetOrderDto>>>> MoveOrderToorderHistory(UpdateOrderDto updatedorder, int id)
         {
-            return Ok(await orderService.MoveOrderToorderHistory(id));
+            return Ok(await orderService.UpdateOrder(updatedorder, id));
         }
 
         [HttpDelete("{id}")]
@@ -58,19 +52,6 @@ namespace Book_Store.Controllers
             }
 
             return Ok(serverResponse);
-        }
-
-        [HttpDelete("History/{id}")]
-        public async Task<ActionResult<ServiceResponse<GetOrderDto>>> DeleteOrderHistory(int id)
-        {
-            var serverResponse = await orderService.DeleteOrderInHistory(id);
-            switch(serverResponse.Data)
-            {
-                case null:
-                    return NotFound(serverResponse);
-            }
-
-            return Ok(serverResponse);
-        }             
+        }         
     }
 }

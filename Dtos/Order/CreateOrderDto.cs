@@ -10,6 +10,5 @@ namespace Book_Store.Dtos.Order
         public int UserId  { get; set; }        
         public int BookId  { get; set; }        
         public int TransactionNumber { get; set; }
-        public string TransactionDate { get; set; }
     }
 }

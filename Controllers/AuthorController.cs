@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Book_Store.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class AuthorController : Controller
@@ -22,6 +23,7 @@ namespace Book_Store.Controllers
             this.authorService = authorService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<GetAuthorDto>>>> GetAllAuthors()
         {

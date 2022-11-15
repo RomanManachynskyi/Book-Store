@@ -33,9 +33,7 @@ namespace Book_Store
 
             CreateMap<Orders, GetOrderDto>();
             CreateMap<CreateOrderDto, Orders>();
-            CreateMap<Orders, CreateOrderDto>();
-            CreateMap<CreateOrderDto, OrderHistory>();
-            CreateMap<OrderHistory, GetOrderDto>();
+            CreateMap<UpdateOrderDto, Orders>();
 
             CreateMap<Bucket, GetBucketItemsDto>();
             CreateMap<AddBucketItemDto, Bucket>();

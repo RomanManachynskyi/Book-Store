@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Book_Store.Data;
@@ -17,26 +18,23 @@ namespace Book_Store.Services.OrderService
     {
         private readonly IMapper mapper;
         public readonly DataContext context;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public OrderService(IMapper mapper, DataContext context)
+        public OrderService(IMapper mapper, DataContext context, IHttpContextAccessor httpContextAccessor)
         {
             this.context = context;
+            this.httpContextAccessor = httpContextAccessor;
             this.mapper = mapper;
         } 
         
+        private int GetUserId() => Convert.ToInt32(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         public async Task<ServiceResponse<List<GetOrderDto>>> GetOrders()
         {
             var serviceResponse = new ServiceResponse<List<GetOrderDto>>();
-            var dbProducts = await context.Orders.Include(c => c.Book).Include(c => c.Book.Author).Include(c => c.Book.Category).ToListAsync();
+            var dbProducts = await context.Orders.Where(c => c.UserId == GetUserId())
+                .Include(c => c.Book).Include(c => c.Book.Author).Include(c => c.Book.Category).ToListAsync();
             serviceResponse.Data = dbProducts.Select(c => mapper.Map<GetOrderDto>(c)).ToList();
-            return serviceResponse;
-        }
-        public async Task<ServiceResponse<List<GetOrderDto>>> GetOrderHistory()
-        {
-            var serviceResponse = new ServiceResponse<List<GetOrderDto>>();
-            var dbOrders = await context.OrderHistory.Include(c => c.Book).Include(c => c.Book.Author).Include(c => c.Book.Category).ToListAsync();
-            serviceResponse.Data = dbOrders.Select(c => mapper.Map<GetOrderDto>(c)).ToList();
             return serviceResponse;
         }
 
@@ -46,14 +44,14 @@ namespace Book_Store.Services.OrderService
 
             try
             {
-                User user = await context.User.FirstOrDefaultAsync(c => c.Id == newOrder.UserId);
+                User user = await context.User.FirstAsync(c => c.Id == GetUserId());
                 if(user == null)
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "User not found";
                     return serviceResponse;
                 }                
-                Book book = await context.Book.FirstOrDefaultAsync(c => c.Id == newOrder.BookId);
+                Book book = await context.Book.FirstAsync(c => c.Id == newOrder.BookId);
                 if(book == null)
                 {
                     serviceResponse.Success = false;
@@ -62,10 +60,13 @@ namespace Book_Store.Services.OrderService
                 }
 
                 Orders order = mapper.Map<Orders>(newOrder);
+                order.UserId = GetUserId();
+                order.TransactionDate = Convert.ToString(DateTime.Now);
                 context.Orders.Add(order);
                 await context.SaveChangesAsync();
 
-                serviceResponse.Data = await context.Orders.Include(c => c.Book).Include(c => c.Book.Author).Include(c => c.Book.Category).Select(c => mapper.Map<GetOrderDto>(c)).ToListAsync();
+                serviceResponse.Data = await context.Orders.Where(c => c.UserId == GetUserId())
+                    .Include(c => c.Book).Include(c => c.Book.Author).Include(c => c.Book.Category).Select(c => mapper.Map<GetOrderDto>(c)).ToListAsync();
             }
             catch(Exception ex)
             {
@@ -76,32 +77,23 @@ namespace Book_Store.Services.OrderService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<GetOrderDto>>> MoveOrderToorderHistory(int id)
+        public async Task<ServiceResponse<GetOrderDto>> UpdateOrder(UpdateOrderDto updatedOrder, int id)
         {
-            var serviceResponse = new ServiceResponse<List<GetOrderDto>>();
+            var serviceResponse = new ServiceResponse<GetOrderDto>();
 
             try
             {
-                var product = await context.Orders.FirstAsync(c => c.Id == id);
-                if(product == null)
+                Orders orderToUpdate = await context.Orders.Include(c => c.Book).Include(c => c.Book.Author).Include(c => c.Book.Category).FirstAsync(c => c.Id == id && c.UserId == GetUserId());
+                if(orderToUpdate == null)
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Order not found";
                     return serviceResponse;
-                } 
+                }
 
-                Orders order = mapper.Map<Orders>(product);
-                context.Orders.Remove(order);
-
-                CreateOrderDto orderDto = mapper.Map<CreateOrderDto>(product);
-                OrderHistory orderInHistory = mapper.Map<OrderHistory>(orderDto);
-                orderInHistory.OrderReceived = true;
-                context.OrderHistory.Add(orderInHistory);
-
+                mapper.Map(updatedOrder, orderToUpdate);
                 context.SaveChanges();
-
-                var dbProducts = await context.Orders.Include(c => c.Book).Include(c => c.Book.Author).Include(c => c.Book.Category).ToListAsync();
-                serviceResponse.Data = dbProducts.Select(c => mapper.Map<GetOrderDto>(c)).ToList();
+                serviceResponse.Data = mapper.Map<GetOrderDto>(orderToUpdate);
             }
             catch(Exception ex)
             {
@@ -118,31 +110,12 @@ namespace Book_Store.Services.OrderService
 
             try
             {
-                var order = await context.Orders.FirstAsync(c => c.Id == id);
+                var order = await context.Orders.FirstAsync(c => c.Id == id && c.UserId == GetUserId());
                 context.Orders.Remove(order);
                 await context.SaveChangesAsync();
 
-                serviceResponse.Data = await context.Orders.Include(c => c.Book.Category).Include(c => c.Book.Author).Select(c => mapper.Map<GetOrderDto>(c)).ToListAsync();
-            }
-            catch(Exception ex)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = ex.Message;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<List<GetOrderDto>>> DeleteOrderInHistory(int id)
-        {
-            var serviceResponse = new ServiceResponse<List<GetOrderDto>>();
-
-            try
-            {
-                var order = await context.OrderHistory.FirstAsync(c => c.Id == id);
-                context.OrderHistory.Remove(order);
-                await context.SaveChangesAsync();
-
-                serviceResponse.Data = await context.OrderHistory.Include(c => c.Book.Category).Include(c => c.Book.Author).Select(c => mapper.Map<GetOrderDto>(c)).ToListAsync();
+                serviceResponse.Data = await context.Orders.Where(c => c.UserId == GetUserId())
+                    .Include(c => c.Book.Category).Include(c => c.Book.Author).Select(c => mapper.Map<GetOrderDto>(c)).ToListAsync();
             }
             catch(Exception ex)
             {

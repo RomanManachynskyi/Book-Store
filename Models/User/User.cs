@@ -13,6 +13,5 @@ namespace Book_Store.Models.User
         public byte[] PaswordHash { get; set; }
         public byte[] PaswordSalt { get; set; }
         public List<Bucket.Bucket>? Bucket { get; set; }
-        public List<Orders.OrderHistory>?  OrderHistory { get; set; }
     }
 }

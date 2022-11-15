@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Book_Store.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class CategoryController : Controller
@@ -20,6 +21,7 @@ namespace Book_Store.Controllers
             this.categoryService = categoryService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<GetCategoryDto>>>> GetAllCategories()
         {
