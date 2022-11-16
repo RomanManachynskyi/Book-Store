@@ -26,7 +26,7 @@ namespace Book_Store.Services.AuthService
         public async Task<ServiceResponse<string>> Login(string username, string password)
         {
             var serviceResponse = new ServiceResponse<string>();
-            var user = await context.User.FirstOrDefaultAsync(u => u.Username.ToLower().Equals(username.ToLower()));
+            var user = await context.User.FirstAsync(u => u.Username.ToLower().Equals(username.ToLower()));
 
             if(user == null)
             {

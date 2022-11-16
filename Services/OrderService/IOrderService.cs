@@ -10,10 +10,8 @@ namespace Book_Store.Services.OrderService
     public interface IOrderService
     {
         public Task<ServiceResponse<List<GetOrderDto>>> GetOrders();
-//        public Task<ServiceResponse<List<GetOrderDto>>> GetOrderHistory();
         public Task<ServiceResponse<List<GetOrderDto>>> CreateOrder(CreateOrderDto newOrder);
         public Task<ServiceResponse<GetOrderDto>> UpdateOrder(UpdateOrderDto updatedOrder, int id);
         public Task<ServiceResponse<List<GetOrderDto>>> DeleteOrder(int id);
-//        public Task<ServiceResponse<List<GetOrderDto>>> DeleteOrderInHistory(int id);
     }
 }

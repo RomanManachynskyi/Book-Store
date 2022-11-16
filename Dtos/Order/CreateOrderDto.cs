@@ -7,7 +7,6 @@ namespace Book_Store.Dtos.Order
 {
     public class CreateOrderDto
     {
-        public int UserId  { get; set; }        
         public int BookId  { get; set; }        
         public int TransactionNumber { get; set; }
     }

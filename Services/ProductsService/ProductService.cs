@@ -8,6 +8,8 @@ using Book_Store.Dtos.Product_Entities.Product;
 using Book_Store.Models;
 using Book_Store.Models.Product_Entities;
 using Book_Store.Data;
+using Book_Store.Models.User;
+using System.Security.Claims;
 
 namespace Book_Store.Services.ProductsService
 {
@@ -15,13 +17,16 @@ namespace Book_Store.Services.ProductsService
     {
         private readonly IMapper mapper;
         public readonly DataContext context;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public ProductService(IMapper mapper, DataContext context)
+        public ProductService(IMapper mapper, DataContext context, IHttpContextAccessor httpContextAccessor)
         {
             this.context = context;
+            this.httpContextAccessor = httpContextAccessor;
             this.mapper = mapper;
         } 
-        
+
+        private int GetUserId() => Convert.ToInt32(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));        
 
         public async Task<ServiceResponse<List<GetProductsDto>>> GetAllProducts()
         {
@@ -37,6 +42,13 @@ namespace Book_Store.Services.ProductsService
 
             try
             {
+                User currentUser = await context.User.FirstAsync(c => c.Id == GetUserId());
+                if(currentUser.Role != Role.Seller)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Permission denied";
+                    return serviceResponse;
+                }                
                 ProductCategory category = await context.Categories.FirstAsync(c => c.Id == newProduct.CategoryId);
                 if(category == null)
                 {
@@ -72,6 +84,13 @@ namespace Book_Store.Services.ProductsService
 
             try
             {
+                User currentUser = await context.User.FirstAsync(c => c.Id == GetUserId());
+                if(currentUser.Role != Role.Seller)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Permission denied";
+                    return serviceResponse;
+                }                
                 ProductCategory category = await context.Categories.FirstAsync(c => c.Id == updatedProduct.CategoryId);
                 if(category == null)
                 {
@@ -106,6 +125,13 @@ namespace Book_Store.Services.ProductsService
 
             try
             {
+                User currentUser = await context.User.FirstAsync(c => c.Id == GetUserId());
+                if(currentUser.Role != Role.Seller)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Permission denied";
+                    return serviceResponse;
+                }                
                 var product = await context.Book.FirstAsync(c => c.Id == id);
                 context.Book.Remove(product);
                 await context.SaveChangesAsync();

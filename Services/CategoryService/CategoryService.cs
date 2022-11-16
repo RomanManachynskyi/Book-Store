@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Book_Store.Data;
 using Book_Store.Dtos.Product_Entities.Category;
 using Book_Store.Models;
 using Book_Store.Models.Product_Entities;
+using Book_Store.Models.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace Book_Store.Services.CategoryService
@@ -16,11 +18,15 @@ namespace Book_Store.Services.CategoryService
         private readonly IMapper mapper;
         public readonly DataContext context;
 
-        public CategoryService(IMapper mapper, DataContext context)
+        private readonly IHttpContextAccessor httpContextAccessor;
+
+        public CategoryService(IMapper mapper, DataContext context, IHttpContextAccessor httpContextAccessor)
         {
             this.context = context;
+            this.httpContextAccessor = httpContextAccessor;
             this.mapper = mapper;
         }
+        private int GetUserId() => Convert.ToInt32(httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         public async Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategories()
         {
@@ -31,8 +37,16 @@ namespace Book_Store.Services.CategoryService
         }        
 
         public async Task<ServiceResponse<List<GetCategoryDto>>> AddCategory(AddCategoryDto newCategory)
-        {
+        {            
             var serviceResponse = new ServiceResponse<List<GetCategoryDto>>();
+
+            User currentUser = await context.User.FirstAsync(c => c.Id == GetUserId());
+            if(currentUser.Role != Role.Seller)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Permission denied";
+                return serviceResponse;
+            }            
             ProductCategory category = mapper.Map<ProductCategory>(newCategory);
 
             context.Categories.Add(category);
@@ -43,11 +57,18 @@ namespace Book_Store.Services.CategoryService
         }
 
         public async Task<ServiceResponse<GetCategoryDto>> UpdateCategory(UpdateCategoryDto updatedCategory, int id)
-        {
+        {           
             var serviceResponse = new ServiceResponse<GetCategoryDto>();
 
             try
             {
+                User currentUser = await context.User.FirstAsync(c => c.Id == GetUserId());
+                if(currentUser.Role != Role.Seller)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Permission denied";
+                    return serviceResponse;
+                }                 
                 var categoryToUpdate = await context.Categories.FirstAsync(c => c.Id == id);
                 mapper.Map(updatedCategory, categoryToUpdate);
                 await context.SaveChangesAsync();
@@ -68,6 +89,13 @@ namespace Book_Store.Services.CategoryService
 
             try
             {
+                User currentUser = await context.User.FirstAsync(c => c.Id == GetUserId());
+                if(currentUser.Role != Role.Seller)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Permission denied";
+                    return serviceResponse;
+                }
                 var category = await context.Categories.FirstAsync(c => c.Id == id);
                 context.Categories.Remove(category);
                 await context.SaveChangesAsync();

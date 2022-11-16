@@ -12,6 +12,8 @@ namespace Book_Store.Models.User
         public string Mail { get; set; } = string.Empty;
         public byte[] PaswordHash { get; set; }
         public byte[] PaswordSalt { get; set; }
+        public Role Role { get; set; }
         public List<Bucket.Bucket>? Bucket { get; set; }
+        public List<Orders.Orders>?  Order { get; set; }
     }
 }
