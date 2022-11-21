@@ -32,6 +32,7 @@ namespace Book_Store.Services.CategoryService
         {
             var serviceResponse = new ServiceResponse<List<GetCategoryDto>>();
             var dbProducts = await context.Categories.ToListAsync();
+            serviceResponse.StatusCode = 200;
             serviceResponse.Data = dbProducts.Select(c => mapper.Map<GetCategoryDto>(c)).ToList();
             return serviceResponse;
         }        
@@ -45,12 +46,14 @@ namespace Book_Store.Services.CategoryService
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Permission denied";
+                serviceResponse.StatusCode = 403;
                 return serviceResponse;
             }            
             ProductCategory category = mapper.Map<ProductCategory>(newCategory);
 
             context.Categories.Add(category);
             await context.SaveChangesAsync();
+            serviceResponse.StatusCode = 200;
             serviceResponse.Data = await context.Categories.Select(c => mapper.Map<GetCategoryDto>(c)).ToListAsync();
 
             return serviceResponse;
@@ -67,11 +70,13 @@ namespace Book_Store.Services.CategoryService
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Permission denied";
+                    serviceResponse.StatusCode = 403;
                     return serviceResponse;
                 }                 
                 var categoryToUpdate = await context.Categories.FirstAsync(c => c.Id == id);
                 mapper.Map(updatedCategory, categoryToUpdate);
                 await context.SaveChangesAsync();
+                serviceResponse.StatusCode = 200;
                 serviceResponse.Data = mapper.Map<GetCategoryDto>(categoryToUpdate);
             }
             catch(Exception ex)
@@ -94,12 +99,23 @@ namespace Book_Store.Services.CategoryService
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Permission denied";
+                    serviceResponse.StatusCode = 403;
                     return serviceResponse;
                 }
+                Book book = await context.Book.FirstOrDefaultAsync(c => c.CategoryId == id);
+                if(book != null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Cateory is used";
+                    return serviceResponse;
+                }                
+                
                 var category = await context.Categories.FirstAsync(c => c.Id == id);
+
                 context.Categories.Remove(category);
                 await context.SaveChangesAsync();
 
+                serviceResponse.StatusCode = 200;
                 serviceResponse.Data = context.Categories.Select(c => mapper.Map<GetCategoryDto>(c)).ToList();
             }
             catch(Exception ex)

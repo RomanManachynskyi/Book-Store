@@ -26,14 +26,19 @@ namespace Book_Store.Services.AuthService
         public async Task<ServiceResponse<string>> Login(string username, string password)
         {
             var serviceResponse = new ServiceResponse<string>();
-            var user = await context.User.FirstAsync(u => u.Username.ToLower().Equals(username.ToLower()));
-
-            if(user == null)
+            User user = null;
+            try
+            {
+                user = await context.User.FirstAsync(u => u.Username.ToLower().Equals(username.ToLower()));
+            }
+            catch(Exception)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "User not found";
-            }
-            else if(!VerifyPasswordHash(password, user.PaswordHash, user.PaswordSalt))
+                return serviceResponse;
+           }
+
+            if(!VerifyPasswordHash(password, user.PaswordHash, user.PaswordSalt))
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Incorrect password";

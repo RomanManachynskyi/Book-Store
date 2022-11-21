@@ -33,13 +33,20 @@ namespace Book_Store.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<GetAuthorDto>>>> AddAuthor(AddAuthorDto newAuthor)
         {
-            return Ok(await authorService.AddAuthor(newAuthor));
+            var serverResponse = await authorService.AddAuthor(newAuthor);
+            if(serverResponse.StatusCode == 403)
+                return Forbid();
+                
+            return Ok(serverResponse);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<ServiceResponse<GetAuthorDto>>> UpdateAuthor(UpdateAuthorDto updatedAuthor, int id)
         {
             var serverResponse = await authorService.UpdateAuthor(updatedAuthor, id);
+            if(serverResponse.StatusCode == 403)
+                return Forbid();
+
             switch(serverResponse.Data)
             {
                 case null:
@@ -53,6 +60,9 @@ namespace Book_Store.Controllers
         public async Task<ActionResult<ServiceResponse<GetAuthorDto>>> DeleteAuthor(int id)
         {
             var serverResponse = await authorService.DeleteAuthor(id);
+            if(serverResponse.StatusCode == 403)
+                return Forbid();
+                            
             switch(serverResponse.Data)
             {
                 case null:

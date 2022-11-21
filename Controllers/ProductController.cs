@@ -28,13 +28,20 @@ namespace Book_Store.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<GetProductsDto>>>> AddProduct(AddProductDto newProduct)
         {
-            return Ok(await productService.AddProduct(newProduct));
+            var serverResponse = await productService.AddProduct(newProduct);
+            if(serverResponse.StatusCode == 403)
+                return Forbid();
+
+            return Ok(serverResponse);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<ServiceResponse<GetProductsDto>>> UpdateProduct(UpdateProductDto updatedProduct, int id)
         {
             var serverResponse = await productService.UpdateProduct(updatedProduct, id);
+            if(serverResponse.StatusCode == 403)
+                return Forbid();
+
             switch(serverResponse.Data)
             {
                 case null:
@@ -48,6 +55,9 @@ namespace Book_Store.Controllers
         public async Task<ActionResult<ServiceResponse<GetProductsDto>>> DeleteProduct(int id)
         {
             var serverResponse = await productService.DeleteProduct(id);
+            if(serverResponse.StatusCode == 403)
+                return Forbid();
+
             switch(serverResponse.Data)
             {
                 case null:

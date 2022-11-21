@@ -43,6 +43,7 @@ namespace Book_Store.Services.AuthorService
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Permission denied";
+                serviceResponse.StatusCode = 403;
                 return serviceResponse;
             }
 
@@ -50,6 +51,7 @@ namespace Book_Store.Services.AuthorService
 
             context.Author.Add(author);
             await context.SaveChangesAsync();
+            serviceResponse.StatusCode = 200;
             serviceResponse.Data = await context.Author.Select(c => mapper.Map<GetAuthorDto>(c)).ToListAsync();
 
             return serviceResponse;
@@ -66,12 +68,14 @@ namespace Book_Store.Services.AuthorService
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Permission denied";
+                    serviceResponse.StatusCode = 403;
                     return serviceResponse;
                 }
 
                 var authorToUpdate = await context.Author.FirstAsync(c => c.Id == id);
                 mapper.Map(updatedAuthor, authorToUpdate);
                 await context.SaveChangesAsync();
+                serviceResponse.StatusCode = 200;
                 serviceResponse.Data = mapper.Map<GetAuthorDto>(authorToUpdate);
             }
             catch(Exception ex)
@@ -94,6 +98,14 @@ namespace Book_Store.Services.AuthorService
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Permission denied";
+                    serviceResponse.StatusCode = 403;
+                    return serviceResponse;
+                }
+                Book book = await context.Book.FirstOrDefaultAsync(c => c.AuthorId == id);
+                if(book != null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Author is used";
                     return serviceResponse;
                 }
 

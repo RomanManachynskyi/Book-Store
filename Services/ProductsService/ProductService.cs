@@ -47,6 +47,7 @@ namespace Book_Store.Services.ProductsService
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Permission denied";
+                    serviceResponse.StatusCode = 403;
                     return serviceResponse;
                 }                
                 ProductCategory category = await context.Categories.FirstAsync(c => c.Id == newProduct.CategoryId);
@@ -67,6 +68,7 @@ namespace Book_Store.Services.ProductsService
                 context.Book.Add(book);
                 await context.SaveChangesAsync();
 
+                serviceResponse.StatusCode = 200;
                 serviceResponse.Data = await context.Book.Select(c => mapper.Map<GetProductsDto>(c)).ToListAsync();
             }
             catch(Exception ex)
@@ -89,6 +91,7 @@ namespace Book_Store.Services.ProductsService
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Permission denied";
+                    serviceResponse.StatusCode = 403;
                     return serviceResponse;
                 }                
                 ProductCategory category = await context.Categories.FirstAsync(c => c.Id == updatedProduct.CategoryId);
@@ -108,6 +111,7 @@ namespace Book_Store.Services.ProductsService
                 var productToUpdate = await context.Book.FirstAsync(c => c.Id == id);
                 mapper.Map(updatedProduct, productToUpdate);
                 context.SaveChanges();
+                serviceResponse.StatusCode = 200;
                 serviceResponse.Data = mapper.Map<GetProductsDto>(productToUpdate);
             }
             catch(Exception ex)
@@ -130,12 +134,14 @@ namespace Book_Store.Services.ProductsService
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Permission denied";
+                    serviceResponse.StatusCode = 403;
                     return serviceResponse;
                 }                
                 var product = await context.Book.FirstAsync(c => c.Id == id);
                 context.Book.Remove(product);
                 await context.SaveChangesAsync();
 
+                serviceResponse.StatusCode = 200;
                 serviceResponse.Data = await context.Book.Include(c => c.Category).Include(c => c.Author).Select(c => mapper.Map<GetProductsDto>(c)).ToListAsync();
             }
             catch(Exception ex)

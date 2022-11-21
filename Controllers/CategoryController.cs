@@ -31,13 +31,19 @@ namespace Book_Store.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<GetCategoryDto>>>> AddCategory(AddCategoryDto newCategory)
         {
-            return Ok(await categoryService.AddCategory(newCategory));
+            var serverResponse = await categoryService.AddCategory(newCategory);
+            if(serverResponse.StatusCode == 403)
+                return Forbid();
+            return Ok(serverResponse);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> UpdateProduct(UpdateCategoryDto updatedCategory, int id)
         {
             var serverResponse = await categoryService.UpdateCategory(updatedCategory, id);
+            if(serverResponse.StatusCode == 403)
+                return Forbid();
+
             switch(serverResponse.Data)
             {
                 case null:
@@ -51,6 +57,9 @@ namespace Book_Store.Controllers
         public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> DeleteCategory(int id)
         {
             var serverResponse = await categoryService.DeleteCategory(id);
+            if(serverResponse.StatusCode == 403)
+                return Forbid();
+
             switch(serverResponse.Data)
             {
                 case null:

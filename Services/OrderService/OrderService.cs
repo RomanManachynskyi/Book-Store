@@ -41,38 +41,28 @@ namespace Book_Store.Services.OrderService
         public async Task<ServiceResponse<List<GetOrderDto>>> CreateOrder(CreateOrderDto newOrder)
         {
             var serviceResponse = new ServiceResponse<List<GetOrderDto>>();
-
+            Book book = null;          
+    
             try
             {
-                User user = await context.User.FirstAsync(c => c.Id == GetUserId());
-                if(user == null)
-                {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = "User not found";
-                    return serviceResponse;
-                }                
-                Book book = await context.Book.FirstAsync(c => c.Id == newOrder.BookId);
-                if(book == null)
-                {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = "Book not found";
-                    return serviceResponse;
-                }
-
-                Orders order = mapper.Map<Orders>(newOrder);
-                order.UserId = GetUserId();
-                order.TransactionDate = Convert.ToString(DateTime.Now);
-                context.Orders.Add(order);
-                await context.SaveChangesAsync();
-
-                serviceResponse.Data = await context.Orders.Where(c => c.UserId == GetUserId())
-                    .Include(c => c.Book).Include(c => c.Book.Author).Include(c => c.Book.Category).Select(c => mapper.Map<GetOrderDto>(c)).ToListAsync();
+                book = await context.Book.FirstAsync(c => c.Id == newOrder.BookId);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = ex.Message;
+                serviceResponse.Message = "Book not found";
+                return serviceResponse;
             }
+
+            Orders order = mapper.Map<Orders>(newOrder);
+            order.UserId = GetUserId();
+            order.TransactionDate = Convert.ToString(DateTime.Now);
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            serviceResponse.Data = await context.Orders.Where(c => c.UserId == GetUserId())
+                .Include(c => c.Book).Include(c => c.Book.Author).Include(c => c.Book.Category).Select(c => mapper.Map<GetOrderDto>(c)).ToListAsync();
+
 
             return serviceResponse;
         }

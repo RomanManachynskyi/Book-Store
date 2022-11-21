@@ -24,7 +24,7 @@ namespace Book_Store.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<ServiceResponse<int>>> Register(UserRegisterDto request)
         {
-            var serverResponse = await authService.Register(new User { Username = request.Username, Mail = request.Mail }, request.Password);
+            var serverResponse = await authService.Register(new User { Username = request.Username, Mail = request.Mail, Role = request.Role }, request.Password);
             if(!serverResponse.Success)
                 return BadRequest(serverResponse);
 
